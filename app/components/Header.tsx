@@ -8,10 +8,10 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ kiri, title, action }) => {
   return (
-    <div className="h-[80px] flex items-center justify-between px-2 bg-gray-900">
-      <div className="text-white">{kiri}</div>
-      <p className="text-white font-bold text-lg">{title}</p>
-      <div className="text-white">{action}</div>
+    <div className="h-[80px] grid grid-cols-3 items-center">
+      <div className="text-white text-start">{kiri}</div>
+      <p className="text-white font-bold text-lg text-center">{title}</p>
+      <div className="text-white text-end">{action}</div>
     </div>
   );
 };

@@ -12,13 +12,17 @@ const CardAbout = () => {
   };
 
   const inputFields = [
-    { id: 'name', label: 'Name', placeholder: 'Enter your name' },
-    { id: 'email', label: 'Email', placeholder: 'Enter your email' },
-    { id: 'bio', label: 'Bio', placeholder: 'Write a short bio' },
+    { id: 'name', label: 'Display Name', placeholder: 'Enter your name' },
+    { id: 'gender', label: 'Gender', placeholder: 'Enter your gender' },
+    { id: 'birthday', label: 'Birthday', placeholder: 'Enter your birthday' },
+    { id: 'horoscope', label: 'horoscope', placeholder: 'Enter your horoscope' },
+    { id: 'zodiac', label: 'Zodiac', placeholder: 'Write a short zodiac' },
+    { id: 'height', label: 'height', placeholder: 'Write a short height' },
+    { id: 'weight', label: 'Weight', placeholder: 'Write a short weight' },
   ];
 
   return (
-    <Card className="bg-gray-700 border-none">
+    <Card className="bg-gray-800 border-none">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-white">About</CardTitle>{' '}
@@ -37,9 +41,13 @@ const CardAbout = () => {
         {showForm ? (
           <form>
             <div className="grid w-full items-center gap-4">
+              <div className="flex items-center gap-x-3">
+                <div className="h-[100px] w-[100px] rounded-full border-gray-400 border"></div>
+                <Button className="text-white">Upload Image</Button>
+              </div>
               {inputFields.map((field) => (
-                <div className="flex flex-col space-y-1.5" key={field.id}>
-                  <label className="text-white" htmlFor={field.id}>
+                <div className="flex  space-y-1.5 items-center" key={field.id}>
+                  <label className="text-white text-sm text-gray-400 w-2/5" htmlFor={field.id}>
                     {field.label}
                   </label>
                   <CustomInput type="text" name={field.id} placeholder={field.placeholder} />
