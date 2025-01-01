@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import React from 'react';
 import CustomInput from '../components/CustomInput';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import axios from 'axios';
+import { ApiPost } from '@/constan/Axios';
 
 const Page = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -15,19 +16,15 @@ const Page = () => {
         formValues[key] = value as string;
       });
 
-      const response = await axios.post('https://techtest.youapp.ai/api/register', formValues, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await ApiPost('register', formValues);
       console.log(response);
       if (response.status === 200) {
         console.log(response.data.message);
       } else {
         console.log(response.data.message);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.response.data.message);
     }
   };
 

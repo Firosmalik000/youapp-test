@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { Edit3 } from 'lucide-react';
-import axios from 'axios';
+import { ApiPost } from '@/constan/Axios';
 
 const CardAbout = () => {
   const [showForm, setShowForm] = useState(false);
@@ -14,7 +15,6 @@ const CardAbout = () => {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const token = window.localStorage.getItem('token');
 
     const formData = new FormData(e.currentTarget);
     const formValues: { [key: string]: string | number | string[] } = {};
@@ -38,15 +38,10 @@ const CardAbout = () => {
     };
 
     try {
-      const response = await axios.post('https://techtest.youapp.ai/api/createProfile', requestBody, {
-        headers: {
-          'x-access-token': token,
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log(response);
-    } catch (err) {
-      console.log(err);
+      const response = await ApiPost('createProfile', requestBody);
+      console.log(response.data.message);
+    } catch (err: any) {
+      console.log(err.response.data.message);
     }
   };
 

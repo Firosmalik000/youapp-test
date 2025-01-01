@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 import React from 'react';
 import CustomInput from '../components/CustomInput';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import axios from 'axios';
+import { ApiPost } from '@/constan/Axios';
 
 const Page = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -15,20 +16,15 @@ const Page = () => {
         formValues[key] = value as string;
       });
 
-      const response = await axios.post('https://techtest.youapp.ai/api/login', formValues, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log(response);
+      const response = await ApiPost('login', formValues);
       if (response.status === 200) {
         console.log(response.data.message);
       } else {
         console.log(response.data.message);
       }
       window.localStorage.setItem('token', response.data.access_token);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.response.data.message);
     }
   };
 
@@ -44,7 +40,7 @@ const Page = () => {
           <CustomInput placeholder="Password" type="password" name="password" />
 
           <Button type="submit" className="bg-gradient-to-r from-emerald-300 to-blue-600 text-white p-2 rounded shadow-md shadow-zinc-50">
-            Register
+            Login
           </Button>
         </form>
         <div className="w-full flex justify-center">

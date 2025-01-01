@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CreatableSelect from 'react-select/creatable';
+import { useRouter } from 'next/navigation';
 import Header from '../components/Header';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { MultiValue, SingleValue } from 'react-select';
-import axios from 'axios';
+import { ApiUpdate } from '@/constan/Axios';
+import useGetMe from '@/hook/useGetMe';
 
 // Define the type for options
 interface OptionType {
@@ -15,10 +17,9 @@ interface OptionType {
 }
 
 const Page = () => {
-  // State for selected interests (array of OptionType)
+  const router = useRouter();
+  const { me, loading } = useGetMe();
   const [selectedInterests, setSelectedInterests] = useState<MultiValue<OptionType>>([]);
-
-  // State for options (array of OptionType)
   const [options, setOptions] = useState<OptionType[]>([
     { value: 'music', label: 'Music' },
     { value: 'basketball', label: 'Basketball' },
@@ -27,12 +28,10 @@ const Page = () => {
     { value: 'traveling', label: 'Traveling' },
   ]);
 
-  // Handle change to update selected interests
   const handleChange = (selectedOptions: MultiValue<OptionType> | SingleValue<OptionType>) => {
     setSelectedInterests(selectedOptions as MultiValue<OptionType> | []);
   };
 
-  // Handle create to add a new option
   const handleCreate = (inputValue: string) => {
     const newOption: OptionType = { value: inputValue.toLowerCase(), label: inputValue };
     setOptions((prev) => [...prev, newOption]);
@@ -41,38 +40,36 @@ const Page = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const token = window.localStorage.getItem('token');
     const dataSelected = selectedInterests.map((interest) => interest.value);
-    const formData = new FormData(e.currentTarget);
-    const formValues: { [key: string]: string | number | string[] } = {};
-    formData.forEach((value, key) => {
-      if (key === 'height' || key === 'weight') {
-        formValues[key] = parseFloat(value as string);
-      } else if (key === 'interest') {
-        formValues[key] = [];
-      } else {
-        formValues[key] = value as string;
-      }
-    });
     const requestBody = {
       interests: dataSelected || [],
     };
 
     try {
-      const response = await axios.put('https://techtest.youapp.ai/api/updateProfile', requestBody, {
-        headers: {
-          'x-access-token': token,
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await ApiUpdate('updateProfile', requestBody);
       console.log(response);
-    } catch (err) {
-      console.log(err);
+      if (response.status === 200) {
+        router.push('/');
+      } else {
+        console.log(response.data.message);
+      }
+    } catch (err: any) {
+      console.log(err.response.data.message);
     }
   };
 
+  useEffect(() => {
+    if (!loading && !me) {
+      router.push('/login');
+    }
+  }, [loading, me, router]);
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
   return (
-    <section className="bg-gray-900 min-h-screen px-4 w-full">
+    <section className="bg-gradient-to-br from-gray-900 via-emerald-900 to-gray-700 min-h-screen px-4 w-full">
       <form action="" onSubmit={handleSubmit}>
         <Header title="Interest" kiri={<Link href="/">Back</Link>} action={<Button type="submit">Save</Button>} />
         <div className="w-full text-white mb-6 mt-[100px]">
