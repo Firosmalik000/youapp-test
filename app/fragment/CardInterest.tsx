@@ -3,6 +3,7 @@ import React from 'react';
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Edit3 } from 'lucide-react';
 const CardInterest = () => {
   return (
     <Card className="bg-gray-800 border-none">
@@ -11,7 +12,7 @@ const CardInterest = () => {
           <CardTitle className="text-white">Interest</CardTitle>
           <Button>
             <Link className="text-white" href={'/interest'}>
-              Edit
+              <Edit3 size={16} />
             </Link>
           </Button>
         </div>

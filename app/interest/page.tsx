@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import CreatableSelect, { MultiValue, SingleValue } from 'react-select/creatable';
 import Header from '../components/Header';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 // Define the type for options
 interface OptionType {
@@ -38,7 +39,7 @@ const Page = () => {
 
   return (
     <section className="bg-gray-900 min-h-screen px-4 w-full">
-      <Header title="Interest" action={<Button>Save</Button>} />
+      <Header title="Interest" kiri={<Link href="/">Back</Link>} action={<Button>Save</Button>} />
       <div className="w-full text-white mb-6 mt-[100px]">
         <p className="font-semibold text-lg">Tell everyone about yourself</p>
         <p className="text-4xl font-bold">What interests you?</p>

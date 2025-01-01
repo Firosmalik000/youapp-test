@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useState } from 'react';
 import CustomInput from '../components/CustomInput';
+import { Edit3 } from 'lucide-react';
 
 const CardAbout = () => {
   const [showForm, setShowForm] = useState(false);
@@ -32,7 +33,7 @@ const CardAbout = () => {
             </Button>
           ) : (
             <Button className="text-white" onClick={handleToggleForm}>
-              Edit
+              <Edit3 size={16} />
             </Button>
           )}
         </div>
