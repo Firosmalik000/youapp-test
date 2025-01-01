@@ -3,17 +3,33 @@ import React from 'react';
 import CustomInput from '../components/CustomInput';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import axios from 'axios';
 
-const page = () => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const Page = () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const formValues: { [key: string]: string } = {};
-    formData.forEach((value, key) => {
-      formValues[key] = value as string;
-    });
+    try {
+      const formData = new FormData(e.currentTarget);
+      const formValues: { [key: string]: string } = {};
+      formData.forEach((value, key) => {
+        formValues[key] = value as string;
+      });
 
-    console.log(formValues);
+      const response = await axios.post('https://techtest.youapp.ai/api/login', formValues, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log(response);
+      if (response.status === 200) {
+        console.log(response.data.message);
+      } else {
+        console.log(response.data.message);
+      }
+      window.localStorage.setItem('token', response.data.access_token);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -24,15 +40,16 @@ const page = () => {
         </div>
         <form className="flex flex-col my-4 w-[400px]" onSubmit={handleSubmit}>
           <CustomInput placeholder="Email" type="email" name="email" />
+          <CustomInput placeholder="Username" type="text" name="username" />
           <CustomInput placeholder="Password" type="password" name="password" />
 
           <Button type="submit" className="bg-gradient-to-r from-emerald-300 to-blue-600 text-white p-2 rounded shadow-md shadow-zinc-50">
-            Login
+            Register
           </Button>
         </form>
         <div className="w-full flex justify-center">
-          <Link href="/register" className="text-white">
-            Register
+          <Link href="/login" className="text-white">
+            Login
           </Link>
         </div>
       </div>
@@ -40,4 +57,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

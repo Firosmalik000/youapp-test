@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import React, { useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { Edit3 } from 'lucide-react';
+import axios from 'axios';
 
 const CardAbout = () => {
   const [showForm, setShowForm] = useState(false);
@@ -11,15 +12,52 @@ const CardAbout = () => {
   const handleToggleForm = () => {
     setShowForm((prev) => !prev);
   };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const token = window.localStorage.getItem('token');
+
+    const formData = new FormData(e.currentTarget);
+    const formValues: { [key: string]: string | number | string[] } = {};
+    formData.forEach((value, key) => {
+      if (key === 'height' || key === 'weight') {
+        formValues[key] = parseFloat(value as string);
+      } else if (key === 'interest') {
+        formValues[key] = [];
+      } else {
+        formValues[key] = value as string;
+      }
+    });
+    const requestBody = {
+      name: formValues.name,
+      birthday: formValues.birthday,
+      height: formValues.height,
+      weight: formValues.weight,
+      interests: formValues.interest || [],
+      horoscope: formValues.horoscope,
+      zodiac: formValues.zodiac,
+    };
+
+    try {
+      const response = await axios.post('https://techtest.youapp.ai/api/createProfile', requestBody, {
+        headers: {
+          'x-access-token': token,
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const inputFields = [
-    { id: 'name', label: 'Display Name', placeholder: 'Enter your name' },
-    { id: 'gender', label: 'Gender', placeholder: 'Enter your gender' },
-    { id: 'birthday', label: 'Birthday', placeholder: 'Enter your birthday' },
-    { id: 'horoscope', label: 'horoscope', placeholder: 'Enter your horoscope' },
-    { id: 'zodiac', label: 'Zodiac', placeholder: 'Write a short zodiac' },
-    { id: 'height', label: 'height', placeholder: 'Write a short height' },
-    { id: 'weight', label: 'Weight', placeholder: 'Write a short weight' },
+    { id: 'name', label: 'Display Name', placeholder: 'Enter your name', type: 'text' },
+    { id: 'gender', label: 'Gender', placeholder: 'Enter your gender', type: 'text' },
+    { id: 'birthday', label: 'Birthday', placeholder: 'Enter your birthday', type: 'date' },
+    { id: 'horoscope', label: 'horoscope', placeholder: 'Enter your horoscope', type: 'text' },
+    { id: 'zodiac', label: 'Zodiac', placeholder: 'Write a short zodiac', type: 'text' },
+    { id: 'height', label: 'height', placeholder: 'Write a short height', type: 'number' },
+    { id: 'weight', label: 'Weight', placeholder: 'Write a short weight', type: 'number' },
   ];
 
   return (
@@ -40,7 +78,7 @@ const CardAbout = () => {
       </CardHeader>
       <CardContent>
         {showForm ? (
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="grid w-full items-center gap-4">
               <div className="flex items-center gap-x-3">
                 <div className="h-[100px] w-[100px] rounded-full border-gray-400 border"></div>
@@ -48,13 +86,15 @@ const CardAbout = () => {
               </div>
               {inputFields.map((field) => (
                 <div className="flex  space-y-1.5 items-center" key={field.id}>
-                  <label className="text-white text-sm text-gray-400 w-2/5" htmlFor={field.id}>
+                  <label className="text-white text-sm  w-2/5" htmlFor={field.id}>
                     {field.label}
                   </label>
-                  <CustomInput type="text" name={field.id} placeholder={field.placeholder} />
+                  <CustomInput type={field.type} name={field.id} placeholder={field.placeholder} />
                 </div>
               ))}
+              <input type="hidden" name="interest" />
             </div>
+            <Button type="submit">Save</Button>
           </form>
         ) : (
           <CardDescription className="text-white">Add your information to help others know you better.</CardDescription>

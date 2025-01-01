@@ -3,17 +3,32 @@ import React from 'react';
 import CustomInput from '../components/CustomInput';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import axios from 'axios';
 
-const page = () => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+const Page = () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const formValues: { [key: string]: string } = {};
-    formData.forEach((value, key) => {
-      formValues[key] = value as string;
-    });
+    try {
+      const formData = new FormData(e.currentTarget);
+      const formValues: { [key: string]: string } = {};
+      formData.forEach((value, key) => {
+        formValues[key] = value as string;
+      });
 
-    console.log(formValues);
+      const response = await axios.post('https://techtest.youapp.ai/api/register', formValues, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log(response);
+      if (response.status === 200) {
+        console.log(response.data.message);
+      } else {
+        console.log(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -42,4 +57,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
