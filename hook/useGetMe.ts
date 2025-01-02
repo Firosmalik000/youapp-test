@@ -15,6 +15,7 @@ interface MeData {
   birthday?: string;
   height?: number;
   weight?: number;
+  image?: string;
 }
 
 const useGetMe = () => {

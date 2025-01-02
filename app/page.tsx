@@ -1,5 +1,4 @@
 'use client';
-import Link from 'next/link';
 import Header from './components/Header';
 import CardAbout from './fragment/CardAbout';
 import CardInterest from './fragment/CardInterest';
@@ -19,8 +18,8 @@ export default function Home() {
   console.log({ me });
   return (
     <section className="bg-gray-900 min-h-screen px-4 w-full">
-      <Header kiri={<Link href="/login">Login</Link>} title={me?.username} action={<Link href="/register">Register</Link>} />
-      <div className="w-full relative  bg-gray-800 rounded-lg h-[250px] mb-6">
+      <Header title={me?.username} />
+      <div className="w-full relative  bg-gray-800 rounded-lg h-[250px] mb-6" style={{ backgroundImage: `url(${me?.image})`, backgroundSize: 'cover' }}>
         <div className="absolute bottom-5 left-3 flex  gap-x-2">
           {me?.zodiac && <Button className="text-white  mt-4"> {me.zodiac}</Button>}
           {me?.horoscope && <Button className="text-white  mt-4"> {me.horoscope}</Button>}

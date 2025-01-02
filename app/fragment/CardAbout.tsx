@@ -11,9 +11,15 @@ import { useToast } from '@/hooks/use-toast';
 
 const CardAbout = () => {
   const { me, loading, setLoading } = useGetMe();
+  // const [file, setFile] = useState<File | null>(null);
   const [showForm, setShowForm] = useState(false);
   const { toast } = useToast();
 
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     setFile(e.target.files[0]);
+  //   }
+  // };
   const handleToggleForm = () => {
     setShowForm((prev) => !prev);
   };
@@ -27,12 +33,16 @@ const CardAbout = () => {
         formValues[key] = parseFloat(value as string);
       } else if (key === 'interest') {
         formValues[key] = [];
+        // } else if (file) {
+        //   formData.append('image', file);
       } else {
         formValues[key] = value as string;
       }
     });
+
     const requestBody = {
       username: me?.username ? me?.username : formValues.username,
+
       birthday: me?.birthday ? me?.birthday : formValues.birthday,
       height: me?.height ? me?.height : formValues.height,
       weight: me?.weight ? me?.weight : formValues.weight,
@@ -70,7 +80,7 @@ const CardAbout = () => {
     { id: 'height', label: 'height', placeholder: 'Write a short height', type: 'number', defaultValue: me?.height },
     { id: 'weight', label: 'Weight', placeholder: 'Write a short weight', type: 'number', defaultValue: me?.weight },
   ];
-  console.log({ me });
+  // console.log({ file });
 
   return (
     <Card className="bg-gray-800 border-none">
@@ -85,8 +95,19 @@ const CardAbout = () => {
       <CardContent>
         {showForm ? (
           <form onSubmit={handleSubmit} className="grid gap-4">
+            {/* <div className="flex items-center gap-x-3">
+              <div className="h-[100px] w-[100px]">
+                {file ? (
+                  <img src={URL.createObjectURL(file)} alt="Preview" className="object-cover h-full w-full rounded-full" />
+                ) : (
+                  <div className="h-full rounded-full w-full bg-gray-800  border border-gray-600 text-center text-white flex items-center justify-center">No Image</div>
+                )}
+              </div>
+
+              <input type="file" name="image" className="" onChange={handleFileChange} />
+            </div> */}
             {inputFields.map((field) => (
-              <div key={field.id} className="flex items-center gap-4">
+              <div key={field.id} className="flex items-center  text-sm gap-4">
                 <label className="text-white w-1/4" htmlFor={field.id}>
                   {field.label}
                 </label>

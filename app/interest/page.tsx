@@ -50,8 +50,9 @@ const Page = () => {
       const response = await ApiUpdate('updateProfile', requestBody);
       if (response.status === 200) {
         router.push('/');
-      } else {
         toast({ title: 'Success', description: response.data.message });
+      } else {
+        toast({ title: 'Error', description: response.data.message });
       }
     } catch (err: any) {
       toast({ title: 'Success', description: err.response.data.message });

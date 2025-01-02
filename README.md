@@ -81,7 +81,4 @@ This app is designed for mobile with **Capacitor** and **Ionic React**, making i
 
 We welcome contributions to this project! Feel free to fork the repository and submit a pull request.
 
-
 ---
-
-This README provides an overview of the project setup and key scripts, focusing on the relevant dependencies and mobile capabilities.
