@@ -20,7 +20,7 @@ To get started with this project, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/youapp-test.git
+   git clone https://github.com/Firosmalik000/youapp-test.git
    cd youapp-test
    ```
 
