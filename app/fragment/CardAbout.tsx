@@ -7,10 +7,12 @@ import CustomInput from '../components/CustomInput';
 import { Edit3 } from 'lucide-react';
 import { ApiPost, ApiUpdate } from '@/constan/Axios';
 import useGetMe from '@/hook/useGetMe';
+import { useToast } from '@/hooks/use-toast';
 
 const CardAbout = () => {
   const { me, loading, setLoading } = useGetMe();
   const [showForm, setShowForm] = useState(false);
+  const { toast } = useToast();
 
   const handleToggleForm = () => {
     setShowForm((prev) => !prev);
@@ -48,12 +50,12 @@ const CardAbout = () => {
       }
       if (response.status === 200) {
         setShowForm(false);
-        console.log(response.data.message);
+        toast({ title: 'Success', description: response.data.message });
       } else {
-        console.log(response.data.message);
+        toast({ title: 'Failed', description: response.data.message });
       }
     } catch (err: any) {
-      console.log(err.response.data.message);
+      toast({ title: 'Failed', description: err.response.data.message });
     } finally {
       setLoading(false);
     }

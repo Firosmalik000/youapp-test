@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { MultiValue, SingleValue } from 'react-select';
 import { ApiUpdate } from '@/constan/Axios';
 import useGetMe from '@/hook/useGetMe';
+import { toast } from '@/hooks/use-toast';
 
 // Define the type for options
 interface OptionType {
@@ -47,14 +48,13 @@ const Page = () => {
 
     try {
       const response = await ApiUpdate('updateProfile', requestBody);
-      console.log(response);
       if (response.status === 200) {
         router.push('/');
       } else {
-        console.log(response.data.message);
+        toast({ title: 'Success', description: response.data.message });
       }
     } catch (err: any) {
-      console.log(err.response.data.message);
+      toast({ title: 'Success', description: err.response.data.message });
     }
   };
 
@@ -71,8 +71,6 @@ const Page = () => {
   const valueSelect = me?.interests?.map((interest) => {
     return { value: interest, label: interest };
   });
-
-  console.log({ valueSelect });
 
   return (
     <section className="bg-gradient-to-br from-gray-900 via-emerald-900 to-gray-700 min-h-screen px-4 w-full">

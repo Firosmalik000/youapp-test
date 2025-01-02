@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ApiPost } from '@/constan/Axios';
 import { useRouter } from 'next/navigation';
+import { toast } from '@/hooks/use-toast';
 
 const Page = () => {
   const [loading, setLoading] = useState(false);
@@ -22,18 +23,19 @@ const Page = () => {
 
       const response = await ApiPost('login', formValues);
       if (response.status === 200) {
-        console.log(response.data.message);
+        toast({ title: 'Success', description: response.data.message });
       } else if (response.status === 201) {
         router.push('/');
+        toast({ title: 'Success', description: response.data.message });
       } else {
-        console.log(response.data.message);
+        toast({ title: 'Success', description: response.data.message });
       }
 
       if (typeof window !== 'undefined') {
         window.localStorage.setItem('token', response.data.access_token);
       }
     } catch (error: any) {
-      console.log(error.response?.data?.message);
+      toast({ title: 'Error', description: error.response?.data?.message });
     } finally {
       setLoading(false);
     }
