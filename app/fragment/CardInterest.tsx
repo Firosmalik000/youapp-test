@@ -4,7 +4,9 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Edit3 } from 'lucide-react';
+import useGetMe from '@/hook/useGetMe';
 const CardInterest = () => {
+  const { me } = useGetMe();
   return (
     <Card className="bg-gray-800 border-none">
       <CardHeader>
@@ -17,8 +19,16 @@ const CardInterest = () => {
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
-        <CardDescription className="text-white">Add your information to help others know you better.</CardDescription>
+      <CardContent className="flex flex-wrap gap-2">
+        {me && me.interests ? (
+          me.interests.map((interest: string) => (
+            <Button key={interest} className="text-white bgblue">
+              {interest}
+            </Button>
+          ))
+        ) : (
+          <CardDescription className="text-white">Add your information to help others know you better.</CardDescription>
+        )}
       </CardContent>
     </Card>
   );

@@ -5,9 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import React, { useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import { Edit3 } from 'lucide-react';
-import { ApiPost } from '@/constan/Axios';
+import { ApiPost, ApiUpdate } from '@/constan/Axios';
+import useGetMe from '@/hook/useGetMe';
 
 const CardAbout = () => {
+  const { me, loading, setLoading } = useGetMe();
   const [showForm, setShowForm] = useState(false);
 
   const handleToggleForm = () => {
@@ -28,69 +30,89 @@ const CardAbout = () => {
       }
     });
     const requestBody = {
-      name: formValues.name,
-      birthday: formValues.birthday,
-      height: formValues.height,
-      weight: formValues.weight,
-      interests: formValues.interest || [],
-      horoscope: formValues.horoscope,
-      zodiac: formValues.zodiac,
+      username: me?.username ? me?.username : formValues.username,
+      birthday: me?.birthday ? me?.birthday : formValues.birthday,
+      height: me?.height ? me?.height : formValues.height,
+      weight: me?.weight ? me?.weight : formValues.weight,
+      interests: me?.interests ? me?.interests : [],
+      horoscope: me?.horoscope ? me?.horoscope : formValues.horoscope,
+      zodiac: me?.zodiac ? me?.zodiac : formValues.zodiac,
     };
-
     try {
-      const response = await ApiPost('createProfile', requestBody);
-      console.log(response.data.message);
+      setLoading(true);
+      let response;
+      if (me) {
+        response = await ApiUpdate('updateProfile', requestBody);
+      } else {
+        response = await ApiPost('createProfile', requestBody);
+      }
+      if (response.status === 200) {
+        setShowForm(false);
+        console.log(response.data.message);
+      } else {
+        console.log(response.data.message);
+      }
     } catch (err: any) {
       console.log(err.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const inputFields = [
-    { id: 'name', label: 'Display Name', placeholder: 'Enter your name', type: 'text' },
-    { id: 'gender', label: 'Gender', placeholder: 'Enter your gender', type: 'text' },
-    { id: 'birthday', label: 'Birthday', placeholder: 'Enter your birthday', type: 'date' },
-    { id: 'horoscope', label: 'horoscope', placeholder: 'Enter your horoscope', type: 'text' },
-    { id: 'zodiac', label: 'Zodiac', placeholder: 'Write a short zodiac', type: 'text' },
-    { id: 'height', label: 'height', placeholder: 'Write a short height', type: 'number' },
-    { id: 'weight', label: 'Weight', placeholder: 'Write a short weight', type: 'number' },
+    { id: 'username', label: 'Display Name', placeholder: 'Enter your name', type: 'text', defaultValue: me?.username },
+    { id: 'gender', label: 'Gender', placeholder: 'Enter your gender', type: 'text', defaultValue: me?.gender },
+    { id: 'birthday', label: 'Birthday', placeholder: 'Enter your birthday', type: 'date', defaultValue: me?.birthday },
+    { id: 'horoscope', label: 'horoscope', placeholder: 'Enter your horoscope', type: 'text', defaultValue: me?.horoscope },
+    { id: 'zodiac', label: 'Zodiac', placeholder: 'Write a short zodiac', type: 'text', defaultValue: me?.zodiac },
+    { id: 'height', label: 'height', placeholder: 'Write a short height', type: 'number', defaultValue: me?.height },
+    { id: 'weight', label: 'Weight', placeholder: 'Write a short weight', type: 'number', defaultValue: me?.weight },
   ];
+  console.log({ me });
 
   return (
     <Card className="bg-gray-800 border-none">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-white">About</CardTitle>{' '}
-          {showForm ? (
-            <Button className="text-white" onClick={handleToggleForm}>
-              Close
-            </Button>
-          ) : (
-            <Button className="text-white" onClick={handleToggleForm}>
-              <Edit3 size={16} />
-            </Button>
-          )}
+          <CardTitle className="text-white">About</CardTitle>
+          <Button className="text-white" onClick={handleToggleForm}>
+            {showForm ? 'Close' : <Edit3 size={16} />}
+          </Button>
         </div>
       </CardHeader>
       <CardContent>
         {showForm ? (
-          <form onSubmit={handleSubmit}>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex items-center gap-x-3">
-                <div className="h-[100px] w-[100px] rounded-full border-gray-400 border"></div>
-                <Button className="text-white">Upload Image</Button>
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            {inputFields.map((field) => (
+              <div key={field.id} className="flex items-center gap-4">
+                <label className="text-white w-1/4" htmlFor={field.id}>
+                  {field.label}
+                </label>
+                <CustomInput type={field.type} name={field.id} defaultValue={field.defaultValue} placeholder={`Enter your ${field.label.toLowerCase()}`} />
               </div>
-              {inputFields.map((field) => (
-                <div className="flex  space-y-1.5 items-center" key={field.id}>
-                  <label className="text-white text-sm  w-2/5" htmlFor={field.id}>
-                    {field.label}
-                  </label>
-                  <CustomInput type={field.type} name={field.id} placeholder={field.placeholder} />
-                </div>
-              ))}
-              <input type="hidden" name="interest" />
-            </div>
-            <Button type="submit">Save</Button>
+            ))}
+            <input type="hidden" name="interest" />
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24"></svg> : 'Save'}
+            </Button>
           </form>
+        ) : me ? (
+          <div className="text-white grid grid-cols-2 gap-4  w-full">
+            <p>Name</p>
+            <p className="text-end">{me.username ?? '-'}</p>
+            <p>Gender</p>
+            <p className="text-end">{me.gender ?? '-'}</p>
+            <p>Birthday</p>
+            <p className="text-end">{me.birthday ?? '-'}</p>
+            <p>Horoscope</p>
+            <p className="text-end">{me.horoscope ?? '-'}</p>
+            <p>Height</p>
+            <p className="text-end">{me.height ?? '-'}</p>
+            <p>Weight</p>
+            <p className="text-end">{me.weight ?? '-'}</p>
+            <p>Zodiac</p>
+            <p className="text-end">{me.zodiac ?? '-'}</p>
+          </div>
         ) : (
           <CardDescription className="text-white">Add your information to help others know you better.</CardDescription>
         )}

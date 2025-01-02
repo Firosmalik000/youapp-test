@@ -7,7 +7,14 @@ interface MeData {
   id: string;
   name: string;
   email: string;
-  username: string;
+  username?: string;
+  interests?: string[];
+  zodiac?: string;
+  horoscope?: string;
+  gender?: string;
+  birthday?: string;
+  height?: number;
+  weight?: number;
 }
 
 const useGetMe = () => {
@@ -30,7 +37,7 @@ const useGetMe = () => {
     fetchData();
   }, []);
 
-  return { me, loading, error };
+  return { me, loading, error, setLoading };
 };
 
 export default useGetMe;

@@ -68,6 +68,12 @@ const Page = () => {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
+  const valueSelect = me?.interests?.map((interest) => {
+    return { value: interest, label: interest };
+  });
+
+  console.log({ valueSelect });
+
   return (
     <section className="bg-gradient-to-br from-gray-900 via-emerald-900 to-gray-700 min-h-screen px-4 w-full">
       <form action="" onSubmit={handleSubmit}>
@@ -81,6 +87,7 @@ const Page = () => {
             isMulti
             options={options}
             value={selectedInterests}
+            defaultValue={valueSelect}
             onChange={handleChange}
             onCreateOption={handleCreate}
             className="react-select-container"

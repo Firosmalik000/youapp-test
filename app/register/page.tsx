@@ -1,14 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import CustomInput from '../components/CustomInput';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ApiPost } from '@/constan/Axios';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const formData = new FormData(e.currentTarget);
       const formValues: { [key: string]: string } = {};
@@ -20,13 +24,19 @@ const Page = () => {
       console.log(response);
       if (response.status === 200) {
         console.log(response.data.message);
+        router.push('/login');
       } else {
         console.log(response.data.message);
       }
     } catch (error: any) {
       console.log(error.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
 
   return (
     <section className="bg-gray-700 w-full min-h-screen flex items-center justify-center">
